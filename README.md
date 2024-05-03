@@ -1,4 +1,4 @@
-Gainz**
+**GuitarGainz**
 ================
 ![Image Alt Text](/assets/guitargainz.jpg)
 
