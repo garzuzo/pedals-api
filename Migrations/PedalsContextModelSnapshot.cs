@@ -83,6 +83,9 @@ namespace pedals_api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("MediaTypeId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("MomentId")
                         .HasColumnType("uniqueidentifier");
 
@@ -95,6 +98,8 @@ namespace pedals_api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MediaTypeId");
+
                     b.HasIndex("MomentId");
 
                     b.HasIndex("PedalId");
@@ -104,13 +109,8 @@ namespace pedals_api.Migrations
 
             modelBuilder.Entity("pedals_api.Models.MediaType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("MediaId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Type")
@@ -118,10 +118,7 @@ namespace pedals_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MediaId")
-                        .IsUnique();
-
-                    b.ToTable("MediaType");
+                    b.ToTable("MediaType", (string)null);
                 });
 
             modelBuilder.Entity("pedals_api.Models.Moment", b =>
@@ -202,6 +199,12 @@ namespace pedals_api.Migrations
 
             modelBuilder.Entity("pedals_api.Models.Media", b =>
                 {
+                    b.HasOne("pedals_api.Models.MediaType", "MediaType")
+                        .WithMany()
+                        .HasForeignKey("MediaTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("pedals_api.Models.Moment", null)
                         .WithMany("Medias")
                         .HasForeignKey("MomentId")
@@ -212,15 +215,8 @@ namespace pedals_api.Migrations
                         .WithMany("Medias")
                         .HasForeignKey("PedalId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
 
-            modelBuilder.Entity("pedals_api.Models.MediaType", b =>
-                {
-                    b.HasOne("pedals_api.Models.Media", null)
-                        .WithOne("MediaType")
-                        .HasForeignKey("pedals_api.Models.MediaType", "MediaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("MediaType");
                 });
 
             modelBuilder.Entity("pedals_api.Models.Moment", b =>
@@ -258,12 +254,6 @@ namespace pedals_api.Migrations
             modelBuilder.Entity("pedals_api.Models.Artist", b =>
                 {
                     b.Navigation("Moments");
-                });
-
-            modelBuilder.Entity("pedals_api.Models.Media", b =>
-                {
-                    b.Navigation("MediaType")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("pedals_api.Models.Moment", b =>

@@ -10,6 +10,7 @@ public class PedalsContext : DbContext
     public DbSet<Artist> Artists { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Moment> Moments { get; set; }
+    public DbSet<Media> Medias { get; set; }
 
 
     public PedalsContext(DbContextOptions<PedalsContext> options) : base(options)
@@ -22,6 +23,7 @@ public class PedalsContext : DbContext
         modelBuilder.Entity<Artist>().Configure();
         modelBuilder.Entity<Category>().Configure();
         modelBuilder.Entity<Media>().Configure();
+        modelBuilder.Entity<MediaType>().Configure();
         modelBuilder.Entity<Moment>().Configure();
         modelBuilder.Entity<Product>().Configure();
     }

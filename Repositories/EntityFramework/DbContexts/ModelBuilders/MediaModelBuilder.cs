@@ -10,6 +10,6 @@ public static class MediaModelBuilder
         builder.ToTable("Media");
         builder.HasKey(p => p.Id);
         builder.Property(p => p.Path);
-        builder.HasOne(p => p.MediaType).WithOne().HasForeignKey<MediaType>(p => p.MediaId);
+        builder.HasOne(p => p.MediaType).WithMany().HasForeignKey(p => p.MediaTypeId);
     }
 }

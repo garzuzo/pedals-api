@@ -40,6 +40,18 @@ namespace pedals_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MediaType",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MediaType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pedal",
                 columns: table => new
                 {
@@ -112,12 +124,19 @@ namespace pedals_api.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Path = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MediaTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     MomentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PedalId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Media", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Media_MediaType_MediaTypeId",
+                        column: x => x.MediaTypeId,
+                        principalTable: "MediaType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Media_Moment_MomentId",
                         column: x => x.MomentId,
@@ -132,26 +151,6 @@ namespace pedals_api.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "MediaType",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    MediaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MediaType", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MediaType_Media_MediaId",
-                        column: x => x.MediaId,
-                        principalTable: "Media",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.InsertData(
                 table: "Category",
                 columns: new[] { "Id", "Name" },
@@ -163,6 +162,11 @@ namespace pedals_api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Media_MediaTypeId",
+                table: "Media",
+                column: "MediaTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Media_MomentId",
                 table: "Media",
                 column: "MomentId");
@@ -171,12 +175,6 @@ namespace pedals_api.Migrations
                 name: "IX_Media_PedalId",
                 table: "Media",
                 column: "PedalId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MediaType_MediaId",
-                table: "MediaType",
-                column: "MediaId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Moment_ArtistId",
@@ -203,13 +201,13 @@ namespace pedals_api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MediaType");
+                name: "Media");
 
             migrationBuilder.DropTable(
                 name: "Product");
 
             migrationBuilder.DropTable(
-                name: "Media");
+                name: "MediaType");
 
             migrationBuilder.DropTable(
                 name: "Moment");
